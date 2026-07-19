@@ -1,0 +1,8 @@
+node_modules/
+.keys/
+.txline-*.json
+.e2e-state.json
+*.log
+program/target/
+app/.next/
+.DS_Store

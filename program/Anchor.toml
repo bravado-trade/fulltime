@@ -1,0 +1,22 @@
+skip_local_validator = true
+
+[toolchain]
+
+[features]
+resolution = true
+skip-lint = false
+
+[programs.devnet]
+fulltime = "6Aow8DZvpWFPrKYf1tUU2WsSXuFF36iNyh4rJegp62M9"
+
+[programs.localnet]
+fulltime = "3JWNg1crD1ZGf2S29AuU54duSS2NeNXcpkZm2HpRZPYx"
+
+[provider]
+cluster = "devnet"
+wallet = "~/dev/fulltime/program/../.keys/dev-wallet.json"
+
+[scripts]
+test = "cargo test"
+
+[hooks]
