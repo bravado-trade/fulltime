@@ -79,6 +79,21 @@ export interface StatValidationResponse {
 export function seqOf(r: ScoreRecord): number { return (r.Seq ?? r.seq ?? 0) as number; }
 export function actionOf(r: ScoreRecord): string { return (r.Action ?? r.action ?? "") as string; }
 
+/**
+ * Some TxLINE endpoints (historical, snapshot) answer in SSE wire format
+ * (`data: {...}` blocks) even over plain GET. Accept both JSON and SSE bodies.
+ */
+export function parseRecords(body: unknown): ScoreRecord[] {
+  if (Array.isArray(body)) return body;
+  if (typeof body !== "string") return body ? [body as ScoreRecord] : [];
+  const out: ScoreRecord[] = [];
+  for (const line of body.split("\n")) {
+    if (!line.startsWith("data:")) continue;
+    try { out.push(JSON.parse(line.slice(5).trim())); } catch { /* heartbeat */ }
+  }
+  return out;
+}
+
 export function toBytes32(value: string | number[] | Uint8Array): number[] {
   const bytes = Array.isArray(value) ? Uint8Array.from(value)
     : value instanceof Uint8Array ? value
@@ -232,13 +247,14 @@ export class TxLineClient {
   }
 
   async scoresHistorical(fixtureId: number): Promise<ScoreRecord[]> {
-    const r = await this.http.get(`/scores/historical/${fixtureId}`);
-    return r.data ?? [];
+    const r = await this.http.get(`/scores/historical/${fixtureId}`, { responseType: "text" });
+    return parseRecords(r.data);
   }
 
   async scoresSnapshot(fixtureId: number): Promise<ScoreRecord[]> {
-    const r = await this.http.get(`/scores/snapshot/${fixtureId}`, { params: { asOf: Date.now() } });
-    return r.data ?? [];
+    const r = await this.http.get(`/scores/snapshot/${fixtureId}`,
+      { params: { asOf: Date.now() }, responseType: "text" });
+    return parseRecords(r.data);
   }
 
   async oddsSnapshot(fixtureId: number): Promise<any[]> {

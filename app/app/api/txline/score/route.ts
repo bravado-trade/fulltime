@@ -12,15 +12,26 @@ export async function GET(req: NextRequest) {
   const fixtureId = req.nextUrl.searchParams.get("fixtureId");
   if (!fixtureId) return NextResponse.json({ error: "fixtureId required" }, { status: 400 });
 
+  const parse = (body: unknown): any[] => {
+    if (Array.isArray(body)) return body;
+    if (typeof body !== "string") return body ? [body] : [];
+    const out: any[] = [];
+    for (const line of body.split("\n")) {
+      if (!line.startsWith("data:")) continue;
+      try { out.push(JSON.parse(line.slice(5).trim())); } catch { /* heartbeat */ }
+    }
+    return out;
+  };
   let records: any[] = [];
   try {
-    const r = await txline.get(`/scores/snapshot/${fixtureId}`, { params: { asOf: Date.now() } });
-    records = r.data ?? [];
+    const r = await txline.get(`/scores/snapshot/${fixtureId}`,
+      { params: { asOf: Date.now() }, responseType: "text" });
+    records = parse(r.data);
   } catch { /* fall back to historical */ }
   if (!records.length) {
     try {
-      const r = await txline.get(`/scores/historical/${fixtureId}`);
-      records = r.data ?? [];
+      const r = await txline.get(`/scores/historical/${fixtureId}`, { responseType: "text" });
+      records = parse(r.data);
     } catch { /* no data yet */ }
   }
 
