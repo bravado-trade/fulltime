@@ -134,7 +134,14 @@ export default function MarketPage({ params }: { params: Promise<{ id: string }>
   const open = "open" in market.status;
   const deadline = new Date(market.stakeDeadline.toNumber() * 1000);
   const latest = score?.latest;
-  const scoreArr = latest?.score ?? latest?.Score;
+  const rawScore = latest?.score ?? latest?.Score;
+  const goals = (side: "Participant1" | "Participant2"): number | null => {
+    if (Array.isArray(rawScore)) return rawScore[side === "Participant1" ? 0 : 1] ?? 0;
+    const s = rawScore?.[side];
+    if (!s) return null;
+    return s.Total?.Goals ?? 0;
+  };
+  const [g1, g2] = [goals("Participant1"), goals("Participant2")];
 
   return (
     <div className="space-y-6">
@@ -176,7 +183,7 @@ export default function MarketPage({ params }: { params: Promise<{ id: string }>
           )}
         </div>
         <div className="mt-2 font-mono text-2xl text-white">
-          {scoreArr ? `${scoreArr[0] ?? 0} — ${scoreArr[1] ?? 0}` : "— vs —"}
+          {g1 !== null || g2 !== null ? `${g1 ?? 0} — ${g2 ?? 0}` : "— vs —"}
         </div>
         <div className="mt-1 text-xs text-slate-500">
           {latest
