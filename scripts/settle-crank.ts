@@ -66,10 +66,24 @@ async function main() {
     m.account.fixtureId.toNumber() === FIXTURE_ID && "open" in m.account.status);
   console.log(`[crank] ${open.length} open market(s) on this fixture`);
 
+  const fetchProofWithRetry = async (keys: number[], attempts = 5) => {
+    for (let i = 1; ; i++) {
+      try {
+        return await tx.statValidation(FIXTURE_ID, finalisedSeq!, keys);
+      } catch (e: any) {
+        const status = e.response?.status;
+        if (i >= attempts) throw e;
+        const wait = 1500 * i;
+        console.log(`[crank] proof fetch ${status ?? e.message} — retry ${i}/${attempts} in ${wait}ms`);
+        await new Promise(r => setTimeout(r, wait));
+      }
+    }
+  };
+
   for (const m of open) {
     try {
       const keys: number[] = m.account.statKeys;
-      const v = await tx.statValidation(FIXTURE_ID, finalisedSeq!, keys);
+      const v = await fetchProofWithRetry(keys);
       const payload = buildValidationPayload(v);
       const rootsPda = dailyScoresRootsPda(
         new PublicKey(tx.net.oracleProgram), v.summary.updateStats.minTimestamp);

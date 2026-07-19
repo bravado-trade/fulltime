@@ -1,0 +1,32 @@
+[
+  {
+    "marketId": "1784481035827",
+    "pda": "D4SV1cswy8jLnLYSjRX4E4MjCYGJFYVDg6krBv4AzcNH",
+    "q": "Final: home side wins (full match, incl. ET/pens)",
+    "sig": "64pYCoPoXrmac3XgaDTMsYcRioLdDQd4jeVU7mE5UgaNGvuoEWv9rdiRfXYDsTiimQCL8fKUCcMWBAQtaz5sKB31"
+  },
+  {
+    "marketId": "1784481039855",
+    "pda": "7XNzu4vgByHYaCTwPQVxxKeNL2weTGhFq3SnASLuSRty",
+    "q": "Final: over 2.5 goals (full match)",
+    "sig": "bYoWcuUwH6EJ8bM9SS32dHnqx3Edx32wVzHR9HaNZACYxLvbZy51nUJ4SmcY5cTuQrrPYDF9M2MuqGZjRJu8rhb"
+  },
+  {
+    "marketId": "1784481044263",
+    "pda": "41gyzqR3HFd16RKvMYgEAS77YcSWuPWin4SKmHK8Y4iE",
+    "q": "Final: a red card is shown",
+    "sig": "R5jgCsLfKRW2rLrenjfqUnEnAKFmDXLhBDtY5uiE61Aha8eiLikwuue6Abm5AxXxtByB2kGsYdee4MwqwSAGv3W"
+  },
+  {
+    "marketId": "1784481046971",
+    "pda": "47SQCZv3PWTFFfpY95e3dnj4PwGWr3rwxEHXwWKXvx8S",
+    "q": "Final: 5+ home-side corners in the 2nd half",
+    "sig": "5yKrxhvgtVCEQyuMGd9gbDUemqwSTZFVczkf5oQzxAcuZsq7CCJiGZ1WbYgvWc9onR4K8dsW8UNVdsPg3Studwii"
+  },
+  {
+    "marketId": "1784481050871",
+    "pda": "3isVMjkDkYbiGQawAQ1HVMK29DMeYJuhPjvBGhW63y97",
+    "q": "PARLAY: home wins + over 2.5 goals + 2+ home H2 corners — one proof, one tx",
+    "sig": "3EQcFJnTnvgXUrfpMjBFDGewAyx2TsrmXpiAxeFBB9Wy3wCT4R7QKvkPRZLE5PX6DjiyPStvAdE5vVuxsRqNwyBg"
+  }
+]

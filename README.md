@@ -83,8 +83,21 @@ npx tsx scripts/settle-crank.ts <fixtureId>
 cd app && npm run dev                # UI on :3000
 ```
 
-Program (devnet): `6Aow8DZvpWFPrKYf1tUU2WsSXuFF36iNyh4rJegp62M9`
+**Live MVP:** https://fulltime-noymaxxs-projects.vercel.app
+
+Program (devnet): [`6Aow8DZvpWFPrKYf1tUU2WsSXuFF36iNyh4rJegp62M9`](https://explorer.solana.com/address/6Aow8DZvpWFPrKYf1tUU2WsSXuFF36iNyh4rJegp62M9?cluster=devnet)
 TxODDS txoracle (devnet): `6pW64gN1s2uqjHkn1unFeEjAwJkPGHoppGvS715wyP2J`
+
+### Proven on devnet (real World Cup data)
+
+- E2E vs England v Argentina (semi, Jul 15): proof-settled `settledNo` (1-2) —
+  [settle tx](https://explorer.solana.com/tx/4r9PZhkapA7gXytDdEeXZ5A17ef3KgxnhsYWUEnYDLxi5Tpo9yyS9gj6frkw59vXd3GWwPv3ZMepzUUEkEeWMfDj?cluster=devnet)
+- Rehearsal vs France v England (3rd place, Jul 18), settled by the crank 13.5s after the
+  finalisation signal:
+  ["over 2.5 goals" → YES](https://explorer.solana.com/tx/3Am6pc1T8n66YtGwfRsnaWLL1BBJUbCN5YMBd5zjxLwYyQUT4CvbXLmWY5bRYuLuFg1QjpniN6iSiUNfPCAXKzE1?cluster=devnet) ·
+  ["home wins" → NO](https://explorer.solana.com/tx/4Ho2h7Nkoz3vxcYTHPTGdF9v3At5QyXgJWd4CJYBD8R2cchY7yR7EjbPYgZwHMxnS48LUULKoraViJtX184QG3nn?cluster=devnet)
+- Empty-pool markets auto-void → refunds (same rehearsal, 3 markets)
+- Live markets for the FINAL (Spain v Argentina, Jul 19 19:00 UTC) are open on the app now
 
 ## Team
 
