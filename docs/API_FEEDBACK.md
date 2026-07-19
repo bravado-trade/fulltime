@@ -38,6 +38,20 @@ feedback below is what we hit building a settlement engine against it in one day
 6. **SSE stream niceties.** Document heartbeat cadence and add a `Last-Event-ID` example for
    resuming mid-match; a settlement crank must not miss `game_finalised` over a reconnect.
 
+## Found live during the World Cup final (July 19)
+
+7. **Proof availability lags finalisation by ~90s.** At the final whistle the settlement crank
+   got 404s from `stat-validation` for the finalised seq until the batch root was anchored
+   (~9 poll cycles). Expected given the anchoring pipeline, but worth documenting with an
+   expected upper bound — a settlement engine needs to know how long to keep retrying, and
+   consumers will otherwise misread the 404 as "wrong seq".
+8. **`DuplicateStatCoverage` makes conjunctions over shared stats non-obvious.** A parlay
+   "home wins AND over 2.5" needs stats 1,2 in two predicates — rejected (exactly-once
+   coverage). The workaround (request duplicated keys, `statKeys=1,2,1,2,3007`, and give each
+   predicate its own leaf pair) works and your API happily serves duplicate leaves — but we
+   found it by trial and error at 22:30 UTC on deadline day. Document it, or allow multi-cover
+   in the strategy validator.
+
 ## Would we pay for this?
 For a sports vertical: yes — the 60s-delay tiers are priced right for fan-facing surfaces. The
 real-time tier's value for us is the settlement path plus the sharp consensus line; a

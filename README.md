@@ -97,7 +97,19 @@ TxODDS txoracle (devnet): `6pW64gN1s2uqjHkn1unFeEjAwJkPGHoppGvS715wyP2J`
   ["over 2.5 goals" → YES](https://explorer.solana.com/tx/3Am6pc1T8n66YtGwfRsnaWLL1BBJUbCN5YMBd5zjxLwYyQUT4CvbXLmWY5bRYuLuFg1QjpniN6iSiUNfPCAXKzE1?cluster=devnet) ·
   ["home wins" → NO](https://explorer.solana.com/tx/4Ho2h7Nkoz3vxcYTHPTGdF9v3At5QyXgJWd4CJYBD8R2cchY7yR7EjbPYgZwHMxnS48LUULKoraViJtX184QG3nn?cluster=devnet)
 - Empty-pool markets auto-void → refunds (same rehearsal, 3 markets)
-- Live markets for the FINAL (Spain v Argentina, Jul 19 19:00 UTC) are open on the app now
+- **THE FINAL, SETTLED LIVE (Spain 1-0 Argentina, ET):** four markets proof-settled minutes
+  after the whistle — [Spain wins → YES](https://explorer.solana.com/tx/48HmX6bhuBGYwa2pBv2bvNH5mb3Dy3TdL6gmjjSM9ywktEDodXsNaDeDKRo3wk25QkxaRYYqYkb4hdpdkLoFjNar?cluster=devnet),
+  [over 2.5 → NO](https://explorer.solana.com/tx/664YX36jiJakcXJ5AM86wsC6n57NYaNXmrL9ts7YjscS48ugf1NojNHuAHy3v7ENb9CW2NEQRaZAjf3nJfJAHKkR?cluster=devnet),
+  [red card → YES](https://explorer.solana.com/tx/UYRogwugumw1f3j9XkwkdEUf9BDxJDpXyEpJ6BGQptS1JTFtwDweqtsZ14Lb4oiqA1JCpjaPAjwTQPyWodrG6Bf?cluster=devnet),
+  [5+ H2 corners → YES](https://explorer.solana.com/tx/c5r6GhXRb7eJQmcRsbm9cLxCRGhZyz2JhvBkCPu4ithU5eeEbcX43hEoVYTnPpqHoMnAkvpupzRBcMyo1b5UUxJ?cluster=devnet) —
+  plus the **3-leg PARLAY settled by ONE 5-leaf proof in ONE tx**
+  ([settledNo, 8.6s](https://explorer.solana.com/tx/4bJf8QWnRNa5uGBSN437S3B2xmoctR7Yfy5yPkz4BLnnwDY3wx8ajTZE1r3bgQWsdH6g7zRh7NfsJ3MpDnTCzZBe?cluster=devnet))
+
+Note on parlays: the oracle enforces exactly-once stat coverage per strategy, so parlays whose
+legs share a stat request duplicated keys in the proof (`statKeys=1,2,1,2,3007`). Our first
+parlay market used the compact layout and is structurally unsettleable — it will void via the
+48h timeout with full refunds, exactly as the settlement policy prescribes. Discovered live;
+see docs/API_FEEDBACK.md #8.
 
 ## Team
 
