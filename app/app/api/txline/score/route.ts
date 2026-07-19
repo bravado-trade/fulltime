@@ -37,6 +37,9 @@ export async function GET(req: NextRequest) {
 
   const act = (r: any) => r.Action ?? r.action ?? "";
   const finalised = records.filter(r => act(r) === "game_finalised").pop() ?? null;
-  const latest = records[records.length - 1] ?? null;
+  // Prefer the last record that actually carries a score (feed tails off with
+  // connection-status actions that have no Score field).
+  const withScore = records.filter(r => (r.Score ?? r.score) != null).pop() ?? null;
+  const latest = withScore ?? records[records.length - 1] ?? null;
   return NextResponse.json({ latest, finalised, count: records.length });
 }
