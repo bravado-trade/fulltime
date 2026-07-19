@@ -10,7 +10,7 @@ Merkle proofs — seconds after full-time, with no votes, committees, or dispute
 **Links**
 - Live MVP (devnet): https://fulltime-noymaxxs-projects.vercel.app
 - Repo (public): https://github.com/bravado-trade/fulltime
-- Demo video: <YOUTUBE/LOOM URL>
+- Demo video: https://github.com/bravado-trade/fulltime/releases/download/v1.0/fulltime-demo.mp4 (also on the repo's v1.0 release page)
 - Program: https://explorer.solana.com/address/6Aow8DZvpWFPrKYf1tUU2WsSXuFF36iNyh4rJegp62M9?cluster=devnet
 
 **Description (short)**
@@ -25,7 +25,8 @@ requires the finalisation marker (period=100) on every proven leaf — so mid-ga
 never settle — and CPIs into TxODDS's on-chain validateStatV2 to verify the proof against the
 root TxODDS anchored on Solana. Demonstrated live on real World Cup data: England v Argentina
 (e2e), France v England settled by our crank 13.5s after the finalisation signal, and the FINAL
-itself settled live. Full settlement policy for abandonment/postponement (void + refunds) is
+itself settled live: Spain 1-0 Argentina (ET) — four markets + a 3-leg parlay (ONE 5-leaf proof,
+ONE tx, 8.6s) proof-settled minutes after the whistle, every outcome correct. Full settlement policy for abandonment/postponement (void + refunds) is
 enforced on-chain. Built by Bravado — a production prediction-markets platform team; the TxLINE
 client is the seed of our sports data layer.
 
