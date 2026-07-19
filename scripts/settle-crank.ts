@@ -32,29 +32,56 @@ async function main() {
   console.log(`[crank] watching fixture ${FIXTURE_ID} for game_finalised…`);
   let finalisedSeq: number | null = null;
 
-  // Try historical/snapshot first (match may already be over)
-  const existing = await tx.latestFinalised(FIXTURE_ID).catch(() => undefined);
-  if (existing) finalisedSeq = seqOf(existing);
+  const findFinalised = async (): Promise<number | null> => {
+    // snapshot covers LIVE fixtures; historical only covers fixtures started 6h+ ago
+    for (const source of [
+      () => tx.scoresSnapshot(FIXTURE_ID),
+      () => tx.scoresHistorical(FIXTURE_ID),
+    ]) {
+      try {
+        const recs = await source();
+        const f = recs.filter(r => actionOf(r) === "game_finalised").pop();
+        if (f) return seqOf(f);
+      } catch { /* try next source */ }
+    }
+    return null;
+  };
+
+  finalisedSeq = await findFinalised();
 
   if (!finalisedSeq) {
     await new Promise<void>(resolve => {
-      const stop = tx.scoresStream(rec => {
-        const fid = rec.FixtureId ?? rec.fixtureId;
-        if (fid !== FIXTURE_ID) return;
-        const action = actionOf(rec);
-        const score = (rec as any).score ?? (rec as any).Score;
-        console.log(`[feed] ${action} seq=${seqOf(rec)} score=${JSON.stringify(score ?? "?")}`);
-        if (action === "game_finalised") {
-          finalisedSeq = seqOf(rec);
-          stop();
-          resolve();
-        }
-      }, FIXTURE_ID);
-      // safety net: poll snapshot every 30s in case the stream misses it
+      let stopped = false;
+      let stopStream: (() => void) | null = null;
+      const finish = (seq: number) => {
+        if (stopped) return;
+        stopped = true;
+        finalisedSeq = seq;
+        clearInterval(iv);
+        stopStream?.();
+        resolve();
+      };
+      // SSE stream with auto-reconnect (server drops idle streams pre-match)
+      const connect = () => {
+        if (stopped) return;
+        console.log(`[crank] (re)connecting scores stream…`);
+        stopStream = tx.scoresStream(rec => {
+          const fid = rec.FixtureId ?? rec.fixtureId;
+          if (fid !== FIXTURE_ID) return;
+          const action = actionOf(rec);
+          const score = (rec as any).score ?? (rec as any).Score;
+          console.log(`[feed] ${action} seq=${seqOf(rec)} score=${JSON.stringify(score ?? "?")}`);
+          if (action === "game_finalised") finish(seqOf(rec));
+        }, FIXTURE_ID);
+      };
+      connect();
+      // reconnect the stream every 5 minutes regardless (belt), and poll the
+      // live snapshot every 20s (suspenders)
+      const reconnectIv = setInterval(() => { stopStream?.(); connect(); }, 5 * 60_000);
       const iv = setInterval(async () => {
-        const f = await tx.latestFinalised(FIXTURE_ID).catch(() => undefined);
-        if (f) { finalisedSeq = seqOf(f); clearInterval(iv); stop(); resolve(); }
-      }, 30_000);
+        const seq = await findFinalised();
+        if (seq) { clearInterval(reconnectIv); finish(seq); }
+      }, 20_000);
     });
   }
 
